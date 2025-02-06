@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Operations</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">CRUD Operations</h2>
+        <div class="card">
+            <div class="card-header">Add Item</div>
+            <div class="card-body">
+                <form id="itemForm">
+                    <div class="form-group">
+                        <label for="itemName">Item Name</label>
+                        <input type="text" id="itemName" class="form-control" placeholder="Enter item name" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Item</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">Item List</div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Item Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemList"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let items = [];
+        let editIndex = -1;
+
+        document.getElementById('itemForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const itemName = document.getElementById('itemName').value.trim();
+            if (itemName) {
+                if (editIndex === -1) {
+                    addItem(itemName);
+                } else {
+                    updateItem(itemName);
+                }
+                this.reset();
+            }
+        });
+
+        function addItem(name) {
+            items.push(name);
+            renderItems();
+        }
+
+        function renderItems() {
+            const itemList = document.getElementById('itemList');
+            itemList.innerHTML = '';
+            items.forEach((item, index) => {
+                itemList.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="editItem(${index})">Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteItem(${index})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function editItem(index) {
+            document.getElementById('itemName').value = items[index];
+            editIndex = index;
+        }
+
+        function updateItem(name) {
+            items[editIndex] = name;
+            editIndex = -1;
+            renderItems();
+        }
+
+        function deleteItem(index) {
+            items.splice(index, 1);
+            renderItems();
+        }
+    </script>
+</body>
+</html>
